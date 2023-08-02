@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8457091026797443568}
   - component: {fileID: 4823993941796370005}
   - component: {fileID: 7284206979734061727}
-  - component: {fileID: 5538330039013813474}
+  - component: {fileID: -5507928266739320150}
   m_Layer: 0
   m_Name: Pine4
   m_TagString: Untagged
@@ -85,8 +85,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5538330039013813474
-MeshCollider:
+--- !u!136 &-5507928266739320150
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -95,7 +95,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6760369281798240013, guid: b8e4a06cd2b18394c8d53e67bff2a5ba, type: 3}
+  m_Radius: 0.14713922
+  m_Height: 5.277271
+  m_Direction: 1
+  m_Center: {x: -0.008579105, y: 2.6386354, z: 0.0029274821}

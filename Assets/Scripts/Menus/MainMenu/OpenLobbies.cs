@@ -16,4 +16,9 @@ public class OpenLobbies : MonoBehaviour
         gameObject.SetActive(false);
         quitGame.SetActive(false);
     }
+
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
 }

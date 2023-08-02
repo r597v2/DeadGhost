@@ -39,7 +39,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         //     return;
         // }
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 5;
+        options.MaxPlayers = 4;
         options.IsVisible = true;
         options.PlayerTtl = 3000;
         options.EmptyRoomTtl = 5000;

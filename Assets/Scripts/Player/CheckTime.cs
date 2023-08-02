@@ -7,6 +7,7 @@ public class CheckTime : MonoBehaviourPunCallbacks
 {
     public Animator animator;
     private bool checkingTime;
+    public GameObject clock;
 
     public Transform cameraTransform;
     public Transform clockPivot;
@@ -18,14 +19,25 @@ public class CheckTime : MonoBehaviourPunCallbacks
         {
             if (!checkingTime)
             {
-                animator.SetTrigger("CheckTime");
-                checkingTime = true;
+                clock.SetActive(true);
+                Invoke("Check", 0.25f);
             }
             else
             {
                 animator.SetTrigger("StopCheckingTime");
                 checkingTime = false;
+                Invoke("SetFalse", 0.5f);
             }
         }
+    }
+
+    private void SetFalse()
+    {
+        clock.SetActive(false);
+    }
+    private void Check()
+    {
+        animator.SetTrigger("CheckTime");
+        checkingTime = true;
     }
 }
