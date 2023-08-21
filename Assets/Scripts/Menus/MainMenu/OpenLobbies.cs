@@ -5,16 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class OpenLobbies : MonoBehaviour
 {
-    public GameObject createRoom;
-    public GameObject roomListings;
-    public GameObject quitGame;
+    public GameObject create, find, createMenu, findMenu;
 
     public void OpenLobbyList()
     {
-        createRoom.SetActive(true);
-        roomListings.SetActive(true);
+        create.SetActive(true);
+        find.SetActive(true);
         gameObject.SetActive(false);
-        quitGame.SetActive(false);
+    }
+
+    public void OpenCreateMenu()
+    {
+        createMenu.SetActive(true);
+        findMenu.SetActive(false);
+    }
+    
+    public void OpenFindMenu()
+    {
+        findMenu.SetActive(true);
+        createMenu.SetActive(false);
     }
 
     public void CloseGame()

@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OpenTailgate : Interactable
+public class OpenTailgate : MonoBehaviour, IInteractable
 {
     public Animator animator;
     public AudioSource doorSound;
     private bool doorOpen;
 
-    protected override void Interact(int photonViewID)
+    public void Interact()
     {
         if (!doorOpen)
         {

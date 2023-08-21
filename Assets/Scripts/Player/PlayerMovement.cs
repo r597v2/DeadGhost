@@ -22,7 +22,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public float maxEnergy;
     private float energy;
     public float dValue;
-    public Slider energyBar;
     public Image energyBarFill;
     public Image energyBarBackground;
     private bool breathingSoundPlaying;
@@ -46,8 +45,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public AudioSource breathingSound;
     public AudioSource coldSound;
 
-    // [Space]
-    // public Animator animator;
+    [Space]
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -56,7 +55,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         energyBarFill.CrossFadeAlpha(0f, 0.1f, false);
         energyBarBackground.CrossFadeAlpha(0f, 0.1f, false);
-        energyBar.value = maxEnergy;
+        energyBarFill.fillAmount = 1;
         camOrigionalPos = cam.transform.localPosition;
         maxTemp = tempFill.fillAmount;
         temperature = maxTemp;
@@ -75,8 +74,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         tempFill.fillAmount = temperature;
         temperature -= 0.0001f;
 
-        energyBarFill.CrossFadeAlpha(0f, 0.25f, false);
-        energyBarBackground.CrossFadeAlpha(0f, 0.25f, false);
+        energyBarFill.CrossFadeAlpha(0f, 0.5f, false);
+        energyBarBackground.CrossFadeAlpha(0f, 0.5f, false);
 
         if (temperature <= 0)
         {
@@ -85,9 +84,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         }
         if (temperature <= 3.33f && temperature > 0) speed = 1.25f;
 
-        if (lighterToggle.itemOn) temperature += 0.0005f;
-        if (oldLanternToggle.itemOn) temperature += 0.001f;
-        if (boxLanternToggle.itemOn) temperature += 0.0075f;
+        if (GetComponent<PlayerInventory>().inventoryList[GetComponent<PlayerInventory>().selectedItem] == ItemType.Lighter &&
+         lighterToggle.itemOn) temperature += 0.0005f;
+        if (GetComponent<PlayerInventory>().inventoryList[GetComponent<PlayerInventory>().selectedItem] == ItemType.OldLantern &&
+         oldLanternToggle.itemOn) temperature += 0.001f;
+        if (GetComponent<PlayerInventory>().inventoryList[GetComponent<PlayerInventory>().selectedItem] == ItemType.BoxLantern &&
+         boxLanternToggle.itemOn) temperature += 0.0075f;
 
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -133,7 +135,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         {
             speed = 2.25f;
             energy -= dValue * Time.deltaTime;
-            energyBar.value -= dValue * Time.deltaTime;
+            energyBarFill.CrossFadeAlpha(96f, 0.1f, false);
+            energyBarBackground.CrossFadeAlpha(48f, 0.1f, false);
+            energyBarFill.fillAmount -= dValue / 3 * Time.deltaTime;
             temperature += 0.0005f;
         }
         else if (!crouched) speed = 1.5f;
@@ -142,7 +146,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         {
             speed = 1.75f;
             energy -= dValue * Time.deltaTime;
-            energyBar.value -= dValue * Time.deltaTime;
+            energyBarFill.CrossFadeAlpha(96f, 0.1f, false);
+            energyBarBackground.CrossFadeAlpha(48f, 0.1f, false);
+            energyBarFill.fillAmount -= dValue / 3 * Time.deltaTime;
             temperature += 0.0005f;
         }
         else if (crouched) speed = 1f;
@@ -150,23 +156,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         if (speed != 2.25f || speed != 1.75f)
         {
             energy += (0.25f * dValue * Time.deltaTime);
-            energyBar.value += (0.25f * dValue * Time.deltaTime);
+            energyBarFill.fillAmount += (0.25f * dValue / 3 * Time.deltaTime);
         }
 
-        if (energy <= 0 || energyBar.value == 0)
+        if (energy <= 0 || energyBarFill.fillAmount == 0)
         {
             energy = 0;
             if (!crouched) speed = 1.5f;
             else speed = 1f;
-
-
-            if (!breathingSoundPlaying)
-            {
-                breathingSound.Play();
-                breathingSoundPlaying = true;
-                StartCoroutine(SetBoolFalse(breathingSoundPlaying, 3.25f));
-            }
         }
+
+        if (energy <= 0.5f || energyBarFill.fillAmount == 1.7f ) breathingSound.enabled = true;
+        else breathingSound.enabled = false;
 
         Vector3 moveVector = transform.TransformDirection(movementInput) * speed;
         rb.velocity = new Vector3(moveVector.x, rb.velocity.y, moveVector.z);
@@ -196,22 +197,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         // if (Input.GetKeyDown(KeyCode.Space) && Physics.CheckSphere(groundCheck.position, 0.1f, groundMask))
         // rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-        // if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-        // {
-        //     animator.SetBool("WalkF", true);
-        // }
-        // if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-        // {
-        //     animator.SetBool("WalkF", false);
-        // }
-        // if (Input.GetKey(KeyCode.S))
-        // {
-        //     animator.SetBool("WalkB", true);
-        // }
-        // if (Input.GetKeyUp(KeyCode.S))
-        // {
-        //     animator.SetBool("WalkB", false);
-        // }
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) && !crouched)
+        {
+            animator.SetBool("WalkF", true);
+        }
+        if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        {
+            animator.SetBool("WalkF", false);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            animator.SetBool("WalkB", true);
+        }
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            animator.SetBool("WalkB", false);
+        }
     }
 
     private void MoveCamera()
@@ -221,7 +222,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         transform.Rotate(0f, mouseInput.x * sens, 0f);
         cam.transform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
-        // animator.SetFloat("HeadAngle", xRot);
+        animator.SetFloat("LookRotation", xRot);
     }
 
     private void CameraShiver()
@@ -232,16 +233,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         cam.transform.localPosition = camOrigionalPos + new Vector3(shiverHorizontalOffset, 0f, 0f);
     }
 
-    private IEnumerator SetBoolFalse(bool param, float delayTime)
-    {
-        yield return new WaitForSeconds(delayTime);
-        param = false;
-    }
-
-    public void OnEnergyBarValueChanged()
-    {
-        energyBarFill.CrossFadeAlpha(63.75f, 0.1f, false);
-        energyBarBackground.CrossFadeAlpha(31.875f, 0.1f, false);
-    }
+    // private IEnumerator SetBoolFalse(bool param, float delayTime)
+    // {
+    //     yield return new WaitForSeconds(delayTime);
+    //     param = false;
+    // }
 }
 

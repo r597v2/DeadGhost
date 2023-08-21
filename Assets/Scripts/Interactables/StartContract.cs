@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class StartContract : Interactable
+public class StartContract : MonoBehaviourPunCallbacks, IInteractable
 {
     private AudioSource startCarSound;
+    public LevelSelect levelSelect;
 
-    protected override void Interact(int photonViewID)
+    public void Interact()
     {
         startCarSound.Play();
+        if (levelSelect.selectedLevel != null)
+        {
+            Invoke("LoadSelectedContract", 2.5f);
+        }
     }
 
     // Start is called before the first frame update
@@ -20,6 +26,11 @@ public class StartContract : Interactable
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    private void LoadSelectedContract()
+    {
+        PhotonNetwork.LoadLevel(levelSelect.selectedLevel);
     }
 }

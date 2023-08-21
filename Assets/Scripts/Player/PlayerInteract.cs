@@ -43,9 +43,9 @@ public class PlayerInteract : MonoBehaviourPunCallbacks
         RaycastHit hitInfo; //variable to store collision info
         if (Physics.Raycast(interactRay, out hitInfo, distance))
         {
-            if (hitInfo.collider.GetComponent<Interactable>() != null || hitInfo.collider.gameObject.CompareTag("Pickable"))
+            if (hitInfo.collider.GetComponent<IInteractable>() != null || hitInfo.collider.gameObject.CompareTag("Pickable"))
             {
-                Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
+                IInteractable interactable = hitInfo.collider.GetComponent<IInteractable>();
                 if (promptMessageSettingOn)
                 {
                     // playerUI.UpdateText(interactable.promptMessage);
@@ -53,16 +53,16 @@ public class PlayerInteract : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    crosshair.GetComponent<RectTransform>().sizeDelta = new Vector2(7.5f, 7.5f);
+                    crosshair.GetComponent<RectTransform>().sizeDelta = new Vector2(5f, 5f);
                     crosshair.GetComponent<Image>().color = new Color(crosshair.GetComponent<Image>().color.r, crosshair.GetComponent<Image>().color.g,
                     crosshair.GetComponent<Image>().color.b, 50f);
                 }
 
                 if (Input.GetKeyDown(KeyCode.E)) // interact and pickup
                 {
-                    if (interactable != null && interactable.interactType == Interactable.INTERACT_TYPE.INTERACT)
+                    if (interactable != null && !hitInfo.collider.CompareTag("Pickable"))
                     {
-                        interactable.BaseIntereract(photonView.ViewID);
+                        interactable.Interact();
                     }
                     else if (hitInfo.collider.CompareTag("Pickable"))
                     {
@@ -72,7 +72,7 @@ public class PlayerInteract : MonoBehaviourPunCallbacks
             }
             else
             {
-                crosshair.GetComponent<RectTransform>().sizeDelta = new Vector2(5, 5);
+                crosshair.GetComponent<RectTransform>().sizeDelta = new Vector2(3f, 3f);
                 crosshair.GetComponent<Image>().color = new Color(crosshair.GetComponent<Image>().color.r, crosshair.GetComponent<Image>().color.g,
                     crosshair.GetComponent<Image>().color.b, 255f);
                 ePrompt.SetActive(false);
@@ -80,7 +80,7 @@ public class PlayerInteract : MonoBehaviourPunCallbacks
         }
         else
         {
-            crosshair.GetComponent<RectTransform>().sizeDelta = new Vector2(5, 5);
+            crosshair.GetComponent<RectTransform>().sizeDelta = new Vector2(3f, 3f);
             crosshair.GetComponent<Image>().color = new Color(crosshair.GetComponent<Image>().color.r, crosshair.GetComponent<Image>().color.g,
                     crosshair.GetComponent<Image>().color.b, 255f);
             ePrompt.SetActive(false);
@@ -93,7 +93,7 @@ public class PlayerInteract : MonoBehaviourPunCallbacks
         {
             playerInventory.inventoryList[(int)GetNextAvailableSlot()] = item.itemScriptableObject.itemType;
             playerInventory.NewItemSelected();
-            Destroy(hitInfo.collider.gameObject);
+            PhotonNetwork.Destroy(hitInfo.collider.gameObject);
         }
     }
 
@@ -121,4 +121,9 @@ public class PlayerInteract : MonoBehaviourPunCallbacks
         }
         else promptMessageSettingOn = false;
     }
+}
+
+public interface IInteractable
+{
+    void Interact();
 }

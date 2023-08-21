@@ -1,17 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenu : MonoBehaviourPun
 {
     public GameObject pauseMenu;
     public GameObject player;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
@@ -36,5 +32,11 @@ public class PauseMenu : MonoBehaviour
             player.GetComponent<PlayerMovement>().enabled = true;
             Cursor.lockState = CursorLockMode.Locked;
         }
+    }
+
+    public void LeaveRoom()
+    {
+        SceneManager.LoadScene("Menu");
+        PhotonNetwork.LeaveRoom();
     }
 }
