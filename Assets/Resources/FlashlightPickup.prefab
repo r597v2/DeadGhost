@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2649514919235116979}
   - component: {fileID: 1399260888280879126}
   - component: {fileID: 3787486693406581980}
-  - component: {fileID: 1682198931715184879}
+  - component: {fileID: 6526394408040655740}
   - component: {fileID: 8044857310337415364}
   - component: {fileID: 3186286393198708265}
   - component: {fileID: 3971013336088255984}
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 3427001154564457737}
   m_LocalRotation: {x: -0.50535095, y: 0.49459118, z: -0.49459118, w: 0.50535095}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.16690846, y: 0.16690846, z: 0.16690846}
+  m_LocalScale: {x: 0.25036275, y: 0.25036275, z: 0.16690846}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6139642923870653152}
@@ -89,8 +89,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1682198931715184879
-BoxCollider:
+--- !u!64 &6526394408040655740
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -99,9 +99,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.19908626, y: 0.19908619, z: 1.3602794}
-  m_Center: {x: 9.436896e-16, y: 0, z: -0.000000029802326}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -9162264694036188266, guid: 747fd23a096a0724db8cb44c3219a512, type: 3}
 --- !u!54 &8044857310337415364
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -110,9 +111,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3427001154564457737}
   serializedVersion: 2
-  m_Mass: 0.45
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 0.69
+  m_Drag: 0.69
+  m_AngularDrag: 0.69
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -300,9 +301,9 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0.9961754, b: 0.9292453, a: 1}
-  m_Intensity: 7.5
+  m_Intensity: 8.5
   m_Range: 15
-  m_SpotAngle: 30
+  m_SpotAngle: 45
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:

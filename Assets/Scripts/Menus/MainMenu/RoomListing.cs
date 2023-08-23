@@ -11,5 +11,6 @@ public class RoomListing : MonoBehaviour
     public void SetRoomInfo(RoomInfo roomInfo)
     {
         _text.text = roomInfo.Name;
+        Debug.Log("Room info set");
     }
 }

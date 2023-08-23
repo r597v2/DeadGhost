@@ -16,4 +16,5 @@ public enum ItemType
     BoxLantern,
     Lighter,
     Flashlight,
+    Torch,
 };

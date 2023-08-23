@@ -17,12 +17,14 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
     public GameObject boxLanternItem;
     public GameObject lighterItem;
     public GameObject flashlightItem;
+    public GameObject torchItem;
     [Space]
     [Header("Prefabs")]
     public GameObject oldLanternPrefab;
     public GameObject boxLanternPrefab;
     public GameObject lighterPrefab;
     public GameObject flashlightPrefab;
+    public GameObject torchPrefab;
 
     private Dictionary<ItemType, GameObject> itemSetActive = new Dictionary<ItemType, GameObject>() { };
     private Dictionary<ItemType, GameObject> itemInstantiate = new Dictionary<ItemType, GameObject>() { };
@@ -36,11 +38,13 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
         itemSetActive.Add(ItemType.BoxLantern, boxLanternItem);
         itemSetActive.Add(ItemType.Lighter, lighterItem);
         itemSetActive.Add(ItemType.Flashlight, flashlightItem);
+        itemSetActive.Add(ItemType.Torch, torchItem);
 
         itemInstantiate.Add(ItemType.BoxLantern, boxLanternPrefab);
         itemInstantiate.Add(ItemType.OldLantern, oldLanternPrefab);
         itemInstantiate.Add(ItemType.Lighter, lighterPrefab);
         itemInstantiate.Add(ItemType.Flashlight, flashlightPrefab);
+        itemInstantiate.Add(ItemType.Torch, torchPrefab);
 
         selectedItem = 0;
 
@@ -54,26 +58,20 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
 
         itemViewModels.transform.rotation = new Quaternion(_camera.transform.rotation.x, _camera.transform.rotation.y, _camera.transform.rotation.z, _camera.transform.rotation.w);
 
-        if (Input.GetKeyDown(KeyCode.Q) && inventoryList[selectedItem] != ItemType.Empty) //drop items
+        //drop items
+        if (Input.GetKeyDown(KeyCode.Q) && inventoryList[selectedItem] != ItemType.Empty)
         {
-            if (itemSetActive[inventoryList[selectedItem]].GetComponent<SimpleToggle>() != null &&
-            itemSetActive[inventoryList[selectedItem]].GetComponent<SimpleToggle>().itemOn &&
-            itemInstantiate[inventoryList[selectedItem]].GetComponentInChildren<Light>() != null)
+            GameObject droppedObject = PhotonNetwork.Instantiate(itemInstantiate[inventoryList[selectedItem]].name, position: dropItemPoint.position, _camera.transform.rotation);
+            if (itemSetActive[inventoryList[selectedItem]].GetComponent<SimpleToggle>() != null && itemInstantiate[inventoryList[selectedItem]].GetComponentInChildren<Light>(true) != null)
             {
-                itemInstantiate[inventoryList[selectedItem]].GetComponentInChildren<Light>().gameObject.SetActive(true);
+                droppedObject.GetComponentInChildren<Light>(true).gameObject.SetActive(itemSetActive[inventoryList[selectedItem]].GetComponent<SimpleToggle>().itemOn);
             }
-            else if (itemSetActive[inventoryList[selectedItem]].GetComponent<SimpleToggle>() != null &&
-            itemInstantiate[inventoryList[selectedItem]].GetComponentInChildren<Light>() != null)
-            {
-                itemInstantiate[inventoryList[selectedItem]].GetComponentInChildren<Light>().gameObject.SetActive(false);
-            }
-
-            GameObject droppedObject = PhotonNetwork.Instantiate(itemInstantiate[inventoryList[selectedItem]].name, position: dropItemPoint.position, transform.rotation);
-            droppedObject.GetComponent<Rigidbody>().AddForce(transform.forward, ForceMode.Impulse);
+            droppedObject.GetComponent<Rigidbody>().AddForce(_camera.transform.forward, ForceMode.Impulse);
             inventoryList[selectedItem] = ItemType.Empty;
             NewItemSelected();
         }
 
+        //rotate slots
         if (Input.GetKeyDown(KeyCode.R) && selectedItem != 3)
         {
             selectedItem++;
@@ -85,12 +83,17 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
             NewItemSelected();
         }
 
+        //use items
         if (Input.GetMouseButtonDown(1) && inventoryList[selectedItem] != ItemType.Empty &&
         itemSetActive[inventoryList[selectedItem]].GetComponent<IUsable>() != null)
         {
             itemSetActive[inventoryList[selectedItem]].GetComponent<IUsable>().UseItem();
         }
+        
+        //turn off flashlight light when drop flashlight
+        if (!HasItem(ItemType.Flashlight)) flashlightLight.SetActive(false);
 
+        //toggle flashlight while not equipped
         if (Input.GetKeyDown(KeyCode.T) && HasItem(ItemType.Flashlight) && inventoryList[selectedItem] != ItemType.Flashlight)
         {
             if (flashlightLight.activeInHierarchy)
@@ -104,9 +107,10 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
                 flashlightItem.GetComponentInChildren<AudioSource>().Play();
             }
         }
-        else if (inventoryList[selectedItem] == ItemType.Flashlight) flashlightLight.SetActive(false);
+        //flashlight
+        else if (inventoryList[selectedItem] == ItemType.Flashlight) flashlightLight.SetActive(flashlightItem.GetComponent<SimpleToggle>().itemOn);
 
-        // change selected slot
+        //change selected slot
         if (Input.GetKeyDown(KeyCode.Alpha1) && inventoryList.Length > 0)
         {
             selectedItem = 0;
@@ -135,6 +139,7 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
         boxLanternItem.SetActive(false);
         lighterItem.SetActive(false);
         flashlightItem.SetActive(false);
+        torchItem.SetActive(false);
 
         if (inventoryList[selectedItem] != ItemType.Empty)
         {
@@ -144,7 +149,7 @@ public class PlayerInventory : MonoBehaviourPunCallbacks
         }
     }
 
-    private bool HasItem(ItemType item)
+    public bool HasItem(ItemType item)
     {
         foreach (ItemType i in inventoryList)
         {

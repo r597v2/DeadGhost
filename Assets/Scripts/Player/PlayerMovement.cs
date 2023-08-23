@@ -24,27 +24,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public float dValue;
     public Image energyBarFill;
     public Image energyBarBackground;
+    private bool sprinting;
+    private bool moving;
     private bool breathingSoundPlaying;
     [Space]
     public SimpleToggle lighterToggle;
     public SimpleToggle oldLanternToggle;
     public SimpleToggle boxLanternToggle;
     [Space]
-    public Image tempFill;
-    private float maxTemp;
-    private float temperature;
-    [SerializeField] private float shiverSpeed;
-    public float shiverIntensity;
-    private Vector3 camOrigionalPos;
-    public float camBobFreq;
-    public float camBobAmplitude;
-    [Space]
     public AudioSource footstepSound;
     public List<AudioClip> footstepSounds = new List<AudioClip>();
     [Space]
     public AudioSource breathingSound;
-    public AudioSource coldSound;
-
     [Space]
     public Animator animator;
 
@@ -56,9 +47,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         energyBarFill.CrossFadeAlpha(0f, 0.1f, false);
         energyBarBackground.CrossFadeAlpha(0f, 0.1f, false);
         energyBarFill.fillAmount = 1;
-        camOrigionalPos = cam.transform.localPosition;
-        maxTemp = tempFill.fillAmount;
-        temperature = maxTemp;
         energy = maxEnergy;
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
@@ -69,27 +57,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return;
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Lobby") temperature = maxTemp;
-
-        tempFill.fillAmount = temperature;
-        temperature -= 0.0001f;
-
         energyBarFill.CrossFadeAlpha(0f, 0.5f, false);
         energyBarBackground.CrossFadeAlpha(0f, 0.5f, false);
-
-        if (temperature <= 0)
-        {
-            energy = 0f;
-            speed = 0.8f;
-        }
-        if (temperature <= 3.33f && temperature > 0) speed = 1.25f;
-
-        if (GetComponent<PlayerInventory>().inventoryList[GetComponent<PlayerInventory>().selectedItem] == ItemType.Lighter &&
-         lighterToggle.itemOn) temperature += 0.0005f;
-        if (GetComponent<PlayerInventory>().inventoryList[GetComponent<PlayerInventory>().selectedItem] == ItemType.OldLantern &&
-         oldLanternToggle.itemOn) temperature += 0.001f;
-        if (GetComponent<PlayerInventory>().inventoryList[GetComponent<PlayerInventory>().selectedItem] == ItemType.BoxLantern &&
-         boxLanternToggle.itemOn) temperature += 0.0075f;
 
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -114,46 +83,39 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         MovePlayer();
         MoveCamera();
-
-        if (temperature <= 0.25f)
-        {
-            CameraShiver();
-            coldSound.enabled = true;
-        }
-        else
-        {
-            cam.transform.localPosition = camOrigionalPos;
-            coldSound.enabled = false;
-        }
-
-        if (temperature >= maxTemp) temperature = maxTemp;
     }
 
     private void MovePlayer()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && energy > 0 && rb.velocity != new Vector3(0f, rb.velocity.y, 0f) && !crouched)
-        {
-            speed = 2.25f;
-            energy -= dValue * Time.deltaTime;
-            energyBarFill.CrossFadeAlpha(96f, 0.1f, false);
-            energyBarBackground.CrossFadeAlpha(48f, 0.1f, false);
-            energyBarFill.fillAmount -= dValue / 3 * Time.deltaTime;
-            temperature += 0.0005f;
-        }
-        else if (!crouched) speed = 1.5f;
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) moving = true;
+        else moving = false;
 
-        if (Input.GetKey(KeyCode.LeftShift) && energy > 0 && rb.velocity != new Vector3(0f, rb.velocity.y, 0f) && crouched)
-        {
-            speed = 1.75f;
-            energy -= dValue * Time.deltaTime;
-            energyBarFill.CrossFadeAlpha(96f, 0.1f, false);
-            energyBarBackground.CrossFadeAlpha(48f, 0.1f, false);
-            energyBarFill.fillAmount -= dValue / 3 * Time.deltaTime;
-            temperature += 0.0005f;
-        }
-        else if (crouched) speed = 1f;
+        if (Input.GetKey(KeyCode.LeftShift)) sprinting = true;
+        else sprinting = false;
 
-        if (speed != 2.25f || speed != 1.75f)
+        //sprint
+        if (moving && sprinting && !crouched && energy > 0)
+        {
+            Sprint(2.5f);
+        }
+        else if (!crouched)
+        {
+            speed = 1.5f;
+            sprinting = false;
+        }
+
+        //crouch sprint
+        if (moving && sprinting && crouched && energy > 0)
+        {
+            Sprint(2f);
+        }
+        else if (crouched)
+        {
+            speed = 1f;
+            sprinting = false;
+        }
+
+        if (!sprinting)
         {
             energy += (0.25f * dValue * Time.deltaTime);
             energyBarFill.fillAmount += (0.25f * dValue / 3 * Time.deltaTime);
@@ -162,18 +124,19 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         if (energy <= 0 || energyBarFill.fillAmount == 0)
         {
             energy = 0;
+            sprinting = false;
             if (!crouched) speed = 1.5f;
             else speed = 1f;
         }
 
-        if (energy <= 0.5f || energyBarFill.fillAmount == 1.7f ) breathingSound.enabled = true;
+        if (energy <= 0.5f || energyBarFill.fillAmount == 1.7f) breathingSound.enabled = true;
         else breathingSound.enabled = false;
 
         Vector3 moveVector = transform.TransformDirection(movementInput) * speed;
         rb.velocity = new Vector3(moveVector.x, rb.velocity.y, moveVector.z);
 
 
-        if (rb.velocity != new Vector3(0f, rb.velocity.y, 0f))
+        if (moving)
         {
             RaycastHit hit;
             Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, float.PositiveInfinity);
@@ -225,12 +188,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         animator.SetFloat("LookRotation", xRot);
     }
 
-    private void CameraShiver()
+    private void Sprint(float sprintSpeed)
     {
-        float shiverHorizontalOffset = Mathf.Sin(Time.time * shiverSpeed) * shiverIntensity;
-
-        // Apply the shivering effect to the camera's local position
-        cam.transform.localPosition = camOrigionalPos + new Vector3(shiverHorizontalOffset, 0f, 0f);
+        speed = sprintSpeed;
+        energy -= dValue * Time.deltaTime;
+        energyBarFill.CrossFadeAlpha(96f, 0.1f, false);
+        energyBarBackground.CrossFadeAlpha(48f, 0.1f, false);
+        energyBarFill.fillAmount -= dValue / 3 * Time.deltaTime;
     }
 
     // private IEnumerator SetBoolFalse(bool param, float delayTime)

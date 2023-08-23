@@ -15,7 +15,7 @@ public class RoomListingsMenu : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        Debug.Log("Update room list 2.");
+        // Debug.Log("Update room list 2.");
 
         foreach (RectTransform child in _content)
         {

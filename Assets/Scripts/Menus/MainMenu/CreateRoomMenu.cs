@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class CreateRoomMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TextMeshProUGUI _roomName;
+    private int lobbyNumber = 0;
 
     void Awake()
     {
@@ -43,12 +44,10 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         options.IsVisible = true;
         options.PlayerTtl = 3000;
         options.EmptyRoomTtl = 5000;
-        if (_roomName.text != null)
-        {
-            PhotonNetwork.CreateRoom(_roomName.text, options, TypedLobby.Default);
-            SceneManager.LoadScene("Lobby");
-        }
-        else return;
+        _roomName.text = "test" + lobbyNumber;
+        PhotonNetwork.CreateRoom(_roomName.text, options, TypedLobby.Default);
+        SceneManager.LoadScene("Lobby");
+        lobbyNumber += 1;
     }
 
     public override void OnCreatedRoom()
