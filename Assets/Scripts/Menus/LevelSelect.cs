@@ -24,6 +24,5 @@ public class LevelSelect : MonoBehaviour, IInteractable
     public void SelectLevel(string levelName)
     {
         selectedLevel = levelName;
-        
     }
 }

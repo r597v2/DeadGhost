@@ -44,7 +44,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         options.IsVisible = true;
         options.PlayerTtl = 3000;
         options.EmptyRoomTtl = 5000;
-        _roomName.text = "test" + lobbyNumber;
+        _roomName.text = "1";
         PhotonNetwork.CreateRoom(_roomName.text, options, TypedLobby.Default);
         SceneManager.LoadScene("Lobby");
         lobbyNumber += 1;

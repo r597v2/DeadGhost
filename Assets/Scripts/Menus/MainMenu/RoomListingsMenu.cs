@@ -15,12 +15,10 @@ public class RoomListingsMenu : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        // Debug.Log("Update room list 2.");
-
-        foreach (RectTransform child in _content)
-        {
-            Destroy(child.gameObject);
-        }
+        // foreach (RectTransform child in _content)
+        // {
+        //     Destroy(child.gameObject);
+        // }
 
         foreach (RoomInfo info in roomList)
         {

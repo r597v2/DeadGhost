@@ -26,12 +26,14 @@ public class PauseMenu : MonoBehaviourPun
             player.GetComponent<PlayerMovement>().enabled = false;
             Cursor.lockState = CursorLockMode.None;
         }
-        else
-        {
-            pauseMenu.SetActive(false);
-            player.GetComponent<PlayerMovement>().enabled = true;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        else ClosePauseMenu();
+    }
+
+    public void ClosePauseMenu()
+    {
+        pauseMenu.SetActive(false);
+        player.GetComponent<PlayerMovement>().enabled = true;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void LeaveRoom()
