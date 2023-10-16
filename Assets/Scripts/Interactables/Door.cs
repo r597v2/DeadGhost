@@ -26,6 +26,8 @@ public class Door : MonoBehaviour, IInteractable
     {
         if (!open) Open(Vector3.zero);
         else Close();
+
+        sound.Play();
     }
 
     public void Open(Vector3 userPos)
@@ -89,23 +91,4 @@ public class Door : MonoBehaviour, IInteractable
             time += Time.deltaTime * speed;
         }
     }
-
-    // public void ToggleDoor()
-    // {
-    //     open = !open;
-
-    //     float time = 0f;
-    //     Quaternion startRotation = transform.rotation;
-    //     Quaternion endRotation;
-    //     if (open) endRotation = Quaternion.Euler(new Vector3(0, startRotation.y + 90f, 0));
-    //     else endRotation = Quaternion.Euler(new Vector3(0, startRotation.y - 90f, 0));
-
-    //     while (time < 1)
-    //     {
-    //         transform.rotation = Quaternion.Slerp(startRotation, endRotation, time);
-    //         time += Time.deltaTime * speed;
-    //     }
-    //     sound.pitch = Random.Range(0.5f, 1.5f);
-    //     sound.Play();
-    // }
 }

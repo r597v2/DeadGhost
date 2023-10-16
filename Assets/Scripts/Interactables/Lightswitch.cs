@@ -17,16 +17,35 @@ public class Lightswitch : MonoBehaviour, IInteractable
         sound = GetComponent<AudioSource>();
     }
 
+    void Update()
+    {
+        
+    }
+
     public void Interact()
     {
-        switchOn = !switchOn;
-        sound.Play();
+        ToggleSwitch();
         if (FindObjectOfType<Breaker>().breakerOn)
         {
             foreach (GameObject light in lights)
             {
-                light.SetActive(switchOn);
+                light.GetComponentInChildren<Light>(true).gameObject.SetActive(switchOn);
             }
         }
+    }
+
+    private void ToggleSwitch()
+    {
+        if (!switchOn)
+        {
+            animator.SetTrigger("On");
+            switchOn = true;
+        }
+        else
+        {
+            animator.SetTrigger("Off");
+            switchOn = false;
+        }
+        sound.Play();
     }
 }

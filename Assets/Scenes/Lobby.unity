@@ -2530,7 +2530,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh95940
+  m_Name: pb_Mesh35612
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -7422,7 +7422,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh94190
+  m_Name: pb_Mesh33862
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -10978,7 +10978,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-51414
+  m_Name: pb_Mesh-752026
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -28383,8 +28383,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2013989577}
   - {fileID: 97524723}
+  - {fileID: 2013989577}
+  - {fileID: 4498301130846987642}
   - {fileID: 1969458657}
   - {fileID: 206519546}
   - {fileID: 254088007}
@@ -28394,7 +28395,6 @@ Transform:
   - {fileID: 1251092547}
   - {fileID: 4909940579888819}
   - {fileID: 7038017538247924202}
-  - {fileID: 4498301130846987642}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -28769,8 +28769,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8677504184133690297, guid: 7f12a292fb384f448bf7ba41d9021540,
         type: 3}
+      propertyPath: rotationAmount
+      value: 115
+      objectReference: {fileID: 0}
+    - target: {fileID: 8677504184133690297, guid: 7f12a292fb384f448bf7ba41d9021540,
+        type: 3}
       propertyPath: forwardDirection
-      value: 1.1
+      value: -1.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -45787,21 +45792,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8350132918417558472, guid: 8d00763f8b54b8743b8d3163cbd72f5d,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 7360c5cd8bb989d4ca02cf8af9be7ea0, type: 3}
-    - target: {fileID: 8836130913550234356, guid: 8d00763f8b54b8743b8d3163cbd72f5d,
-        type: 3}
-      propertyPath: switchOn
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8836130913550234356, guid: 8d00763f8b54b8743b8d3163cbd72f5d,
-        type: 3}
-      propertyPath: lights.Array.size
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8836130913550234356, guid: 8d00763f8b54b8743b8d3163cbd72f5d,
         type: 3}
