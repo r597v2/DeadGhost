@@ -17,11 +17,6 @@ public class Lightswitch : MonoBehaviour, IInteractable
         sound = GetComponent<AudioSource>();
     }
 
-    void Update()
-    {
-        
-    }
-
     public void Interact()
     {
         ToggleSwitch();
@@ -34,17 +29,19 @@ public class Lightswitch : MonoBehaviour, IInteractable
         }
     }
 
-    private void ToggleSwitch()
+    public void ToggleSwitch()
     {
         if (!switchOn)
         {
             animator.SetTrigger("On");
             switchOn = true;
+            FindObjectOfType<Breaker>().lightsOn++;
         }
         else
         {
             animator.SetTrigger("Off");
             switchOn = false;
+            FindObjectOfType<Breaker>().lightsOn--;
         }
         sound.Play();
     }
